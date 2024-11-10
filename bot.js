@@ -47,7 +47,7 @@ bot.on('message', async (msg) => {
         
             deleteMedia(id);
         } catch {
-            bot.sendMessage(chatId, 'Error, invalid URL.');
+            bot.sendMessage(chatId, 'Error, no video detected.');
         }
             
     } else {
