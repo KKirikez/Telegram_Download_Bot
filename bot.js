@@ -4,21 +4,22 @@ require('dotenv').config();
 
 process.env.NTBA_FIX_350 = 'true'; 
 
+// Telegram bot setup
 const TelegramBot = require('node-telegram-bot-api');
-
 const token = process.env.BOT_TOKEN;
 const bot = new TelegramBot(token, { polling: true });
 
 //URL regular expression
 const urlRegex = /^(https?:\/\/)?(www\.)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[a-zA-Z0-9\-._~:/?#[\]@!$&'()*+,;=]*)?$/;
 
+// Requirements
 const YTDlpWrap = require('yt-dlp-wrap').default;
 const fs = require('fs');
 
+// Installing binaries
 YTDlpWrap.downloadFromGithub(
     './bin/binary'
 );
-
 const ytDlpWrap = new YTDlpWrap('./bin/binary');
 
 
@@ -52,6 +53,7 @@ bot.on('message', async (msg) => {
     }
   });
 
+// Downloads from URL and names after id
 async function downloadPipeline(url, id){
     let stdout = await ytDlpWrap.execPromise([
         url,
@@ -62,6 +64,7 @@ async function downloadPipeline(url, id){
     ]);
 }
 
+// Deletes video file with associated id
 async function deleteMedia(id){
     try{
         fs.unlinkSync(`./videos/${id}.mp4`);
