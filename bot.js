@@ -38,14 +38,18 @@ bot.on('message', async (msg) => {
 
         bot.sendMessage(chatId, 'Valid URL detected, processing now!');
 
-        await downloadPipeline(messageText, id);
+        try{
+            await downloadPipeline(messageText, id);
 
-        await bot.sendVideo(chatId, `./videos/${id}.mp4`);
+            await bot.sendVideo(chatId, `./videos/${id}.mp4`);
         
-        bot.sendMessage(chatId, 'Finished!');
+            bot.sendMessage(chatId, 'Finished!');
         
-        deleteMedia(id);
-   
+            deleteMedia(id);
+        } catch {
+            bot.sendMessage(chatId, 'Error, invalid URL.');
+        }
+            
     } else {
         
         bot.sendMessage(chatId, 'Error, invalid video URL.');
