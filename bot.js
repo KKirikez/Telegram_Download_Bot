@@ -28,32 +28,44 @@ bot.on('message', async (msg) => {
     const messageText = msg.text;
   
     if (messageText === '/start') {
-        bot.sendMessage(chatId, 'Send me video links!');
-    } else if(urlRegex.test(messageText)){
-        bot.sendMessage(chatId, 'Valid URL detected, processing now!');
         
-        await downloadPipeline(messageText);
+        bot.sendMessage(chatId, 'Send me video links!');
+    
+    } else if(urlRegex.test(messageText)){
+        
+        let id = messageText.substring(messageText.length-6, messageText.length);
 
-        await bot.sendVideo(chatId, './videos/video.mp4');
+        bot.sendMessage(chatId, 'Valid URL detected, processing now!');
+
+        await downloadPipeline(messageText, id);
+
+        await bot.sendVideo(chatId, `./videos/${id}.mp4`);
         
         bot.sendMessage(chatId, 'Finished!');
         
-        deleteMedia('video');
+        deleteMedia(id);
+   
     } else {
+        
         bot.sendMessage(chatId, 'Error, invalid video URL.');
+    
     }
   });
 
-async function downloadPipeline(url){
+async function downloadPipeline(url, id){
     let stdout = await ytDlpWrap.execPromise([
         url,
         '-f',
         'best',
         '-o',
-        `./videos/video.mp4`,
+        `./videos/${id}.mp4`,
     ]);
 }
 
 async function deleteMedia(id){
-    fs.unlinkSync(`./videos/${id}.mp4`);
+    try{
+        fs.unlinkSync(`./videos/${id}.mp4`);
+    } catch {
+        console.log("Error deleting.")
+    }
 }
